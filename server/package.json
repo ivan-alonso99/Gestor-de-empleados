@@ -13,5 +13,6 @@
     "express": "^4.21.0",
     "mysql": "^2.18.1"
   },
+  "devDependencies": {},
   "description": ""
 }

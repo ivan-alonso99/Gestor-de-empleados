@@ -10,10 +10,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
 
   const [nombre,setNombre] = useState("");
-  const [edad,setEdad] = useState(0);
+  const [edad,setEdad] = useState();
   const [pais,setPais] = useState("");
   const [cargo,setCargo] = useState("");
-  const [anios,setAnios] = useState(0);
+  const [anios,setAnios] = useState();
+  const [id,setid] = useState();
+
+
+  const [editar,setEditar] = useState(false);
+
 
   const [empleadosList,setEmpleados] = useState([]);
 
@@ -25,8 +30,46 @@ function App() {
     cargo:cargo,
     anios:anios  
     }).then(()=>{
-      alert("Empleado registrado")
+      getEmpleados();
+      limpiarCampos();
     });    
+  }
+
+  const update = ()=>{
+    axios.put("http://localhost:3001/update",{
+    id:id,
+    nombre:nombre,
+    edad:edad,
+    pais:pais,
+    cargo:cargo,
+    anios:anios  
+    }).then(()=>{
+      getEmpleados();
+      limpiarCampos();
+      alert("Actualizado");
+    });    
+  }
+
+  const limpiarCampos = ()=>{
+      setAnios("");
+      setNombre("");
+      setCargo("");
+      setEdad("");
+      setPais("");
+      setid("");
+      setEditar(false)
+  }
+
+  const editarEmpleado = (val)=>{
+    setEditar(true);
+
+    setid(val.id);
+    setNombre(val.nombre);
+    setEdad(val.edad);
+    setPais(val.pais);
+    setCargo(val.cargo);
+    setAnios(val.anios);
+
   }
 
   const getEmpleados = ()=>{
@@ -38,19 +81,9 @@ function App() {
 getEmpleados();
 
   return (
-    <div class="container">
-    <div className="App">
-
-        <div className='lista'>
-        {
-          empleadosList.map((val,key)=>{
-            return <div className='' > {val.nombre} </div>
-          })
-        }
-        </div>
-    </div>
-        <div class="card text-center">
-      <div class="card-header">
+    <div className="container">
+        <div className="card text-center">
+      <div className="card-header">
         Gestion de empleados
       </div>
       <div className="card-body">
@@ -60,29 +93,29 @@ getEmpleados();
           onChange={(event)=>{
             setNombre(event.target.value);
           }}
-        className="form-control" placeholder="Ingrese un nombre" aria-label="Username" aria-describedby="basic-addon1"/>
+        className="form-control"  value={nombre} placeholder="Ingrese un nombre" aria-label="Username" aria-describedby="basic-addon1"/>
       </div>
-            <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">Edad:</span>
-        <input type="text" 
+            <div className="input-group mb-3">
+        <span className="input-group-text" id="basic-addon1">Edad:</span>
+        <input type="text" value={edad} 
         onChange={(event)=>{
           setEdad(event.target.value);
         }}
-        class="form-control" placeholder="Ingrese la edad" aria-label="Username" aria-describedby="basic-addon1"/>
+        className="form-control" placeholder="Ingrese la edad" aria-label="Username" aria-describedby="basic-addon1"/>
       </div>
 
-      <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">Pais:</span>
-        <input type="text" 
+      <div className="input-group mb-3">
+        <span className="input-group-text" id="basic-addon1">Pais:</span>
+        <input type="text"  value={pais} 
         onChange={(event)=>{
           setPais(event.target.value);
         }}
-        class="form-control" placeholder="Ingrese el pais" aria-label="Username" aria-describedby="basic-addon1"/>
+        className="form-control" placeholder="Ingrese el pais" aria-label="Username" aria-describedby="basic-addon1"/>
       </div>
        
       <div className="input-group mb-3">
         <span className="input-group-text" id="basic-addon1">Cargo:</span>
-        <input type="text" 
+        <input type="text" value={cargo}
         onChange={(event)=>{
           setCargo(event.target.value);
         }} 
@@ -91,7 +124,7 @@ getEmpleados();
 
       <div className="input-group mb-3">
         <span className="input-group-text" id="basic-addon1">Años:</span>
-        <input type="text" 
+        <input type="text" value={anios}
         onChange={(event)=>{
           setAnios(event.target.value);
         }}
@@ -99,38 +132,58 @@ getEmpleados();
       </div>
 
       </div>
-      <div class="card-footer text-body-secondary">
-      <button className='btn btn-success' onClick={add}>Registrar</button>
+      <div className="card-footer text-body-secondary">
+        {
+          editar? 
+          <div>
+          <button className='btn btn-warning m-2' onClick={update}>Actualizar</button> 
+          <button className='btn btn-info m-2' onClick={limpiarCampos}>Cancelar</button>
+           </div>
+           :<button className='btn btn-success' onClick={add}>Registrar</button>
+
+        }
       </div>
     </div>
-    <table class="table table-striped">
+    <table className="table table-striped">
     <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Edad</th>
+      <th scope="col">Pais</th>
+      <th scope="col">Cargo</th>
+      <th scope="col">Experiencia</th>
+      <th scope="col">Acciones</th>
     </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
+      </thead>
+      <tbody>
+      {
+          empleadosList.map((val,key)=>{
+            return <tr key={val.id}>
+                  <th scope="row">{val.id}</th>
+                  <td>{val.nombre}</td>
+                  <td>{val.edad}</td>
+                  <td>{val.pais}</td>
+                  <td>{val.cargo}</td>
+                  <td>{val.anios}</td>
+                  <td>
+                      <div className="btn-group" role="group" aria-label="Basic example">
+                          <button type="button" 
+                          onClick={()=>{
+                            editarEmpleado(val)
+                          } }
+                          className="btn btn-info">Editar</button>
+                          <button type="button" className="btn btn-danger">Eliminar</button>
+                      </div>
+                  </td>
+              </tr>
+            
+            
+          })
+        }
+
+        
+      </tbody>
   </table>
     </div>
   );
