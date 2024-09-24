@@ -4,7 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import Swal from 'sweetalert2'
 
 
 function App() {
@@ -32,6 +32,12 @@ function App() {
     }).then(()=>{
       getEmpleados();
       limpiarCampos();
+      Swal.fire({
+        title: "Registro exisitoso!",
+        text: "El empleado "+nombre+" fue registrado con exito!",
+        icon: "success",
+        timer:3000
+      });
     });    
   }
 
@@ -46,8 +52,40 @@ function App() {
     }).then(()=>{
       getEmpleados();
       limpiarCampos();
-      alert("Actualizado");
+      Swal.fire({
+        title: "Actualizacion exisitosa!",
+        text: "El empleado "+nombre+" fue actualizado con exito!",
+        icon: "success",
+        timer:3000
+      });
     });    
+  }
+
+  const deleteEmple = (val)=>{
+
+    Swal.fire({
+      title: "Estas seguro?",
+      text: "Realmente desea eliminar a "+val.nombre+"",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, eliminarlo"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`http://localhost:3001/delete/${val.id}`).then(()=>{
+          getEmpleados();
+          limpiarCampos();  
+          Swal.fire({
+            title: "Eliminado!",
+            text: val.nombre+" Fue eliminado",
+            icon: "success",
+            timer:4000
+          });
+        });    
+      }
+    });
+
   }
 
   const limpiarCampos = ()=>{
@@ -173,7 +211,9 @@ getEmpleados();
                             editarEmpleado(val)
                           } }
                           className="btn btn-info">Editar</button>
-                          <button type="button" className="btn btn-danger">Eliminar</button>
+                          <button type="button" onClick={()=>{
+                            deleteEmple(val);
+                          }} className="btn btn-danger">Eliminar</button>
                       </div>
                   </td>
               </tr>
