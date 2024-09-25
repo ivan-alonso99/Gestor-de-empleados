@@ -37,7 +37,13 @@ function App() {
         text: "El empleado "+nombre+" fue registrado con exito!",
         icon: "success",
         timer:3000
-      });
+      })
+      }).catch(function(error){
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error && error.message === "Network Error" ? "Intente más tarde" : (error.message || "Ocurrió un error desconocido")
+        });
     });    
   }
 
@@ -57,6 +63,12 @@ function App() {
         text: "El empleado "+nombre+" fue actualizado con exito!",
         icon: "success",
         timer:3000
+      }).catch(function(error){
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error && error.message === "Network Error" ? "Intente más tarde" : (error.message || "Ocurrió un error desconocido")
+        })
       });
     });    
   }
@@ -82,7 +94,13 @@ function App() {
             icon: "success",
             timer:4000
           });
-        });    
+        }).catch(function(error){
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error && error.message === "Network Error" ? "Intente más tarde" : (error.message || "Ocurrió un error desconocido")
+          });
+        })
       }
     });
 
